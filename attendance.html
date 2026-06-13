@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الحضور – النيابة العامة</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
+:root {
+  --teal-dark: #02807A;
+  --teal-mid: #309C99;
+  --teal-light: #E1F5EE;
+  --gold-dark: #AA926D;
+  --gold-light: #C5B298;
+  --cream-dark: #ECE6DE;
+  --cream-light: #F6F4F0;
+  --text-primary: #1a1a1a;
+  --text-secondary: #555;
+  --border: #ddd;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Tajawal','Segoe UI',sans-serif;background:var(--cream-light);color:var(--text-primary);direction:rtl;min-height:100vh;display:flex;flex-direction:column;}
+
+/* HEADER */
+.pp-header{background:var(--teal-dark);color:white;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+.pp-header-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:10px 28px;max-width:1400px;margin:0 auto;gap:16px;}
+.pp-logo-area{display:flex;align-items:center;justify-content:center;}
+.pp-emblem{height:80px;width:auto;display:flex;align-items:center;justify-content:center;}
+.pp-emblem img{height:80px;width:auto;object-fit:contain;}
+.pp-gold-bar{height:4px;background:var(--gold-dark);}
+.nav-tabs{display:flex;gap:4px;background:rgba(255,255,255,0.1);border-radius:6px;padding:4px;}
+.nav-tab{padding:7px 16px;border-radius:4px;border:none;background:transparent;color:rgba(255,255,255,0.8);cursor:pointer;font-family:inherit;font-size:13px;transition:all 0.2s;}
+.nav-tab.active{background:white;color:var(--teal-dark);font-weight:600;}
+.nav-tab:hover:not(.active){background:rgba(255,255,255,0.15);color:white;}
+
+/* PAGES */
+.page{display:none;max-width:600px;margin:0 auto;padding:32px 20px 60px;flex:1;}
+.page.active{display:block;}
+.page-wide{max-width:1100px;}
+
+/* CHECKIN PAGE */
+.checkin-hero{background:var(--teal-dark);border-radius:12px;padding:40px 36px;color:white;text-align:center;position:relative;overflow:hidden;margin-bottom:28px;}
+.checkin-hero::before{content:'';position:absolute;top:-30px;left:-30px;width:120px;height:120px;background:rgba(255,255,255,0.06);border-radius:50%;}
+.checkin-hero::after{content:'';position:absolute;bottom:-20px;right:-20px;width:80px;height:80px;background:rgba(255,255,255,0.04);border-radius:50%;}
+.checkin-hero .hero-icon{font-size:52px;margin-bottom:14px;position:relative;}
+.checkin-hero h1{font-size:26px;font-weight:700;margin-bottom:10px;line-height:1.4;position:relative;}
+.checkin-hero p{font-size:15px;color:rgba(255,255,255,0.85);line-height:1.7;position:relative;}
+
+.checkin-card{background:white;border-radius:12px;border:0.5px solid var(--border);padding:32px;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
+
+.form-group{margin-bottom:20px;}
+.form-group label{display:block;font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:8px;}
+.form-group label .req{color:#dc3545;margin-right:3px;}
+.form-group input{width:100%;border:2px solid var(--border);border-radius:8px;padding:13px 16px;font-family:inherit;font-size:16px;direction:rtl;background:white;transition:all 0.2s;color:var(--text-primary);}
+.form-group input:focus{outline:none;border-color:var(--teal-mid);box-shadow:0 0 0 3px rgba(48,156,153,0.1);}
+.form-group input.error{border-color:#dc3545;box-shadow:0 0 0 3px rgba(220,53,69,0.1);}
+.field-hint{font-size:12px;color:var(--text-secondary);margin-top:5px;}
+.field-error{font-size:12px;color:#dc3545;margin-top:5px;display:none;}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 28px;border-radius:8px;border:none;cursor:pointer;font-family:inherit;font-size:15px;font-weight:700;transition:all 0.2s;width:100%;}
+.btn-primary{background:var(--teal-dark);color:white;}
+.btn-primary:hover:not(:disabled){background:#026860;transform:translateY(-1px);box-shadow:0 4px 12px rgba(2,128,122,0.3);}
+.btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+.btn-outline{background:white;color:var(--teal-dark);border:2px solid var(--teal-dark);}
+.btn-outline:hover{background:var(--teal-light);}
+.btn-sm{padding:7px 16px;font-size:12px;font-weight:600;width:auto;}
+.btn-gold{background:var(--gold-dark);color:white;}
+.btn-gold:hover{background:#9a8060;}
+.btn-danger{background:#dc3545;color:white;}
+
+/* SUCCESS */
+.success-box{background:white;border-radius:12px;padding:52px 36px;text-align:center;border:0.5px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,0.06);}
+.success-icon{font-size:72px;margin-bottom:18px;animation:pop 0.4s ease;}
+@keyframes pop{0%{transform:scale(0.5);opacity:0;}80%{transform:scale(1.1);}100%{transform:scale(1);opacity:1;}}
+.success-box h2{font-size:24px;color:var(--teal-dark);margin-bottom:12px;font-weight:700;}
+.success-box p{font-size:15px;color:var(--text-secondary);line-height:1.7;margin-bottom:6px;}
+.success-meta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:20px 0;}
+.success-meta-item{background:var(--teal-light);border:1px solid var(--teal-mid);border-radius:8px;padding:10px 18px;font-size:14px;color:var(--teal-dark);font-weight:600;}
+
+/* ADMIN */
+.admin-header-bar{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;align-items:center;justify-content:space-between;}
+.admin-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+.admin-section-title{font-size:20px;font-weight:700;color:var(--teal-dark);margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid var(--teal-light);display:flex;align-items:center;gap:10px;}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:28px;}
+.kpi-card{background:white;border-radius:10px;padding:22px;border:0.5px solid var(--border);text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+.kpi-card .kpi-icon{font-size:30px;margin-bottom:8px;}
+.kpi-card .kpi-label{font-size:12px;color:var(--text-secondary);margin-bottom:6px;}
+.kpi-card .kpi-value{font-size:30px;font-weight:700;color:var(--teal-dark);}
+.kpi-card .kpi-sub{font-size:12px;color:var(--text-secondary);margin-top:4px;}
+
+.filter-bar{background:white;border:0.5px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.filter-bar input{border:1.5px solid var(--border);border-radius:6px;padding:8px 12px;font-family:inherit;font-size:13px;direction:rtl;flex:1;min-width:160px;background:white;}
+.filter-bar input:focus{outline:none;border-color:var(--teal-mid);}
+.export-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+
+.table-wrap{background:white;border-radius:10px;border:0.5px solid var(--border);overflow:hidden;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{background:var(--teal-dark);color:white;padding:12px 14px;text-align:right;font-weight:600;white-space:nowrap;}
+tbody tr:nth-child(even){background:#fafafa;}
+tbody tr:hover{background:var(--teal-light);}
+tbody td{padding:11px 14px;border-bottom:0.5px solid #f0f0f0;color:var(--text-primary);}
+tbody tr:last-child td{border-bottom:none;}
+
+.pagination{display:flex;gap:6px;align-items:center;justify-content:center;margin-top:12px;}
+.page-btn{width:34px;height:34px;border:1.5px solid var(--border);border-radius:6px;background:white;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--text-secondary);transition:all 0.2s;}
+.page-btn.active{background:var(--teal-dark);border-color:var(--teal-dark);color:white;}
+
+/* LOGIN */
+.login-wrap{min-height:60vh;display:flex;align-items:center;justify-content:center;}
+.login-card{background:white;border-radius:12px;padding:40px;width:100%;max-width:400px;border:0.5px solid var(--border);text-align:center;box-shadow:0 2px 12px rgba(0,0,0,0.08);}
+.login-card h2{font-size:20px;color:var(--teal-dark);margin-bottom:6px;}
+.login-card p{font-size:13px;color:var(--text-secondary);margin-bottom:24px;}
+.login-field{margin-bottom:14px;text-align:right;}
+.login-field label{display:block;font-size:13px;color:var(--text-secondary);margin-bottom:6px;}
+.login-field input{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;}
+.login-field input:focus{outline:none;border-color:var(--teal-mid);}
+.login-err{color:#dc3545;font-size:12px;margin-top:8px;display:none;}
+
+/* ALERTS */
+.alert{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.alert-info{background:var(--teal-light);color:var(--teal-dark);border:1px solid var(--teal-mid);}
+.alert-warning{background:#fff3cd;color:#856404;border:1px solid #ffc107;}
+.alert-error{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;}
+
+/* LOADING */
+.loading-overlay{display:none;position:fixed;inset:0;background:rgba(2,128,122,0.12);z-index:999;align-items:center;justify-content:center;}
+.loading-overlay.show{display:flex;}
+.loading-box{background:white;padding:28px 36px;border-radius:12px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.15);}
+.spinner{width:40px;height:40px;border:3px solid var(--teal-light);border-top-color:var(--teal-dark);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:8px;color:white;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2);opacity:0;transition:opacity 0.3s;pointer-events:none;}
+.toast.show{opacity:1;}
+
+/* FOOTER */
+.pp-footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);text-align:center;padding:16px;font-size:12px;margin-top:auto;}
+.pp-footer a{color:var(--gold-light);text-decoration:none;}
+
+/* BADGE */
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;}
+.badge-success{background:#d4edda;color:#155724;}
+.badge-today{background:var(--teal-light);color:var(--teal-dark);}
+
+@media(max-width:680px){
+  .pp-header-inner{padding:10px 14px;grid-template-columns:1fr auto;}
+  .pp-emblem img{height:60px;}
+  .checkin-hero{padding:28px 20px;}
+  .checkin-hero h1{font-size:21px;}
+  .checkin-card{padding:22px 18px;}
+  .page{padding:20px 14px 50px;}
+  .kpi-grid{grid-template-columns:1fr 1fr;}
+  .admin-header-bar{flex-direction:column;align-items:stretch;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <div style="color:var(--teal-dark);font-weight:600;font-size:14px;">جاري المعالجة...</div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- HEADER -->
+<header class="pp-header">
+  <div class="pp-header-inner">
+    <div style="justify-self:start;">
+      <nav class="nav-tabs">
+        <button class="nav-tab active" onclick="showPage('checkin')" id="tab-checkin">تسجيل الحضور</button>
+        <button class="nav-tab" onclick="showAdminLogin()" id="tab-admin">لوحة التحكم</button>
+      </nav>
+    </div>
+    <div class="pp-logo-area">
+      <div class="pp-emblem">
+        <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMiIgZGF0YS1uYW1lPSJMYXllciAyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNDEuMDggMzQxLjA4Ij4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLmNscy0xIHsKICAgICAgICBmb250LXNpemU6IDIwLjAxcHg7CiAgICAgIH0KCiAgICAgIC5jbHMtMSwgLmNscy0yIHsKICAgICAgICBmb250LWZhbWlseTogQmFoaWpUaGVTYW5zQXJhYmljLUJvbGQsICdCYWhpaiBUaGVTYW5zQXJhYmljJzsKICAgICAgICBmb250LXdlaWdodDogNzAwOwogICAgICB9CgogICAgICAuY2xzLTEsIC5jbHMtMyB7CiAgICAgICAgZmlsbDogI2I3ODUyZTsKICAgICAgfQoKICAgICAgLmNscy00LCAuY2xzLTIgewogICAgICAgIGZpbGw6ICNmZmY7CiAgICAgIH0KCiAgICAgIC5jbHMtNSB7CiAgICAgICAgZmlsbDogIzAwNmQ2NzsKICAgICAgfQoKICAgICAgLmNscy0yIHsKICAgICAgICBmb250LXNpemU6IDEwLjI2cHg7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxnIGlkPSJMYXllcl8xIiBkYXRhLW5hbWU9IkxheWVyIDEiPgogICAgPGc+CiAgICAgIAogICAgICA8Zz4KICAgICAgICA8Zz4KICAgICAgICAgIDxnPgogICAgICAgICAgICA8cGF0aCBjbGFzcz0iY2xzLTQiIGQ9Ik0yMjcuNzYsMTYxLjY2Yy43My0uMzQsMS4wNC0uOTIuOTQtMS42Mi0uMS0uNjYtLjYzLTEuMTItMS4zMy0xLjE1cy0xLjIzLjQtMS4zOCwxLjA5LjE0LDEuMzYuOSwxLjY1djEwLjA5Yy0uMTMuMTItLjQyLjE4LS41NS4xM3MtLjI5LS4yOC0uMjktLjQ1Yy0uMTQtMy44LTEuNC03LjM3LTMuODItMTAuMzkuODQtMy4yLDEuNDItNi4zOCwxLjg3LTkuNjgsMS4xNS04LjQ0LDEuNDctMTcuMzctLjM4LTI1LjY4LTIuMzQsMy41Mi0zLjY2LDcuNjMtNC43LDExLjcxLS45NywzLjgxLTEuNiw3LjYxLTIuMTUsMTEuNDctLjk1LTIuMTYtMS40NS00LjI0LTEuNjYtNi41LS41OC02LjQ4LjQxLTEyLjg2LDIuODMtMTguOTctMi4wNiwxLjM2LTMuODQsMi44NC01LjQ0LDQuNTktMS45MSwyLjA5LTMuNiw0LjI0LTUuMTcsNi42LTIuMjQsMy4zNy00LjA4LDYuOC01LjczLDEwLjY5LTEuMDgtNi41OSwxLjE2LTEzLDQuNjEtMTguNTQsMS45NC0zLjExLDQuMjEtNS44OCw2Ljk5LTguMzEtMS44My4zLTMuNDcuODctNS4xNCwxLjYyLTcuMzYsMy4zLTE0LjAzLDkuNDQtMTkuMzMsMTUuNjguNTUtMy4xNSwxLjc5LTUuOTMsMy4zNS04LjU2LDQuNTQtNy42MywxMi4wMS0xMy40NSwyMC40NS0xNS45My0xLjQtLjI2LTIuNjQtLjMxLTMuOTgtLjI0LTIuNTQuMTUtNC45NS41Mi03LjQzLDEuMTQtNC42MSwxLjE2LTguOTQsMi44MS0xMy4yNyw1LjAyLjgtMS4yOCwxLjc0LTIuMzEsMi44MS0zLjMxLDQuMDItMy43Nyw5LjQ1LTYuNTYsMTQuNzUtOC4xNiwzLjk3LTEuMTksNy45OS0xLjczLDEyLjEzLTEuNDYtMS4yMi0xLjQ1LTIuODItMi4yNS00LjU5LTMuMiwyLjY5LS44MSw1LjQ5LS42MSw3Ljk4Ljc4LS43OC0xLjYxLTIuMDUtMi43Ni0zLjM2LTQsMi43NC0uMDEsNS4xNCwxLjEyLDcuMjIsMi44NC4zMi0xLjcxLDEuMTMtMy4yMSwyLjQxLTQuNDcsMS4zMiwxLjE5LDIuMTEsMi43MiwyLjQ2LDQuNTEsMi4wNS0xLjc2LDQuNDktMi44OCw3LjIzLTIuODktMS4zMiwxLjIxLTIuNTQsMi4zNS0zLjM5LDQsMS4zNC0uNjIsMi42Ni0xLjE4LDQuMTgtMS4yMiwxLjMxLS4wNCwyLjU3LjA1LDMuODEuNDQtMS42My44OC0zLjQ0LDEuNzYtNC41NywzLjIxLDguODEtLjU3LDE4LjUzLDIuNzcsMjUuMzksOC4zNiwxLjYyLDEuMzIsMy4wOCwyLjc0LDQuMjIsNC41Ny00LjQ1LTIuMjgtOC45Mi0zLjk4LTEzLjY4LTUuMTItMy4zMy0uOC03LjQ2LTEuNDQtMTAuODgtLjgsOC41NSwyLjYsMTUuOTIsOC4zNCwyMC40OCwxNi4xMSwxLjU0LDIuNjEsMi42OCw1LjQsMy4yOCw4LjQ0LTQuODMtNS42OS0xMC42OS0xMS4yLTE3LjI0LTE0LjctMi4yOS0xLjIyLTQuNi0yLjE5LTcuMTktMi42NSwxLjEsMS4xLDIuMjEsMi4xLDMuMjMsMy4yOCw1LjM5LDYuMjcsOS43LDE1LjA4LDguMywyMy42Mi0yLjEtNC45OC00LjcxLTkuNjYtOC4wMi0xMy45NS0yLjMzLTMuMDItNS4wMi01LjkzLTguMzQtNy45OCwyLjMzLDUuODMsMy4zNSwxMS45NywyLjkyLDE4LjIxLS4xOCwyLjUtLjY3LDQuODktMS43Myw3LjIzLS42Mi00LjI1LTEuMy04LjIxLTIuMzYtMTIuMjMtLjk5LTMuNzQtMi4yNi03LjY0LTQuNDgtMTAuOTMtMi4xNSw5LjU3LTEuNDEsMjAuMDkuMjUsMjkuNjJsMS4yNSw1LjcyYy0yLjM3LDMuMDEtMy43NCw2LjU5LTMuODMsMTAuNDQsMCwuMjItLjI1LjQzLS40MS40NS0uMjQuMDItLjQzLS4yMi0uNDMtLjUydi05LjY5WiIvPgogICAgICAgICAgICA8cGF0aCBjbGFzcz0iY2xzLTQiIGQ9Ik0yMzAuNDEsMTkxLjljLS4xLS43Ny4zNS0xLjQ1LDEuMDctMS42NmwxLjMyLS4zOWMuNDktLjM5LjQ4LTEuMTIuMDMtMS42bC01LjUxLTUuODgtNS42MSw2Yy0uMjQuMjUtLjI0LjgxLS4xNSwxLjA2LjMzLjg4LDIuMS4zNCwyLjYxLDEuNzMuMzEuODYtLjEzLDEuNjktLjgyLDIuMTVzLTEuNjIuMzQtMi4zMi0uMmMtLjc4LS42MS0xLjA2LTEuNTQtMS4xOC0yLjU4bC0yLjIxLDEuOTNjLTIuNzUsMi4zOS02LjQ3LDMuMjEtOS45LDEuODctLjkzLS4zNi0xLjczLTEuMDMtMi4xNi0xLjktLjc2LTEuNTQtLjI1LTMuMzksMS4zMi00LjExLDEuMTMtLjUyLDIuNDctLjE3LDMuMzQuNzMsMS41LDEuNTUsMy4yNCwxLjM3LDQuOTQuMDcsMS40MS0xLjA4LDEuNjUtMi41NS44My0yLjM2cy0xLjQ4LS4yMy0xLjgtLjk2Yy0uNDEtLjk2LS4wMi0yLjIxLDEuMDQtMi41LjczLS4yLDEuNDQuMjIsMS45Ljc3LjUyLjYxLjY4LDEuMzQuODcsMi4xOWwyLjcxLTIuODIsMy43OS00LjEyLTUuOC01LjhjLTIuNi0yLjYtNS4zOC00Ljg3LTguMjktNy4xMS00LjYzLTMuNTctOS44NC02LjQyLTE1LjYtNy40NWwtLjIyLjcsMi40Myw1LjkyLDUuNTksMTMuNDFjLjgyLjEsMS4yNy43NSwxLjA5LDEuNDItLjU3LDIuMTItMS43OCwzLjg5LTMuMzgsNS4zLTQuMjMsMy43MS0xMC4zOCwzLjgxLTE0LjcxLjIxLTEuNzUtMS40Ni0zLjEyLTMuMzUtMy42Ny01LjYtLjE5LS43Ni40NS0xLjI3LDEuMTMtMS4zM2w2LjUtMTQuNzcsMS45MS00LjQ2Yy0uMjYtLjQ2LS40LS44NC0uMzktMS40LTEuODgtLjM2LTMuNzQtLjQ1LTUuODMtLjU1LDIuOTctMS40Myw2LjIyLTEuOTEsOS41Mi0xLjYzLDcuNi42NCwxNC4xMSwzLjcxLDIwLjEyLDguMjcsMi40OSwxLjg5LDQuNzYsMy44OCw2Ljk1LDYuMDlsMi4zLDIuMzIsMy4xOCwzLjM2YzguOTQtOS43NCwxOC43Ny0xOC45MiwzMi42LTIwLjA1LDMuMjYtLjI3LDYuNDguMjEsOS40MSwxLjYxLTIuMDMuMS0zLjg1LjE3LTUuNzQuNTItLjAyLjUyLS4xMi45My0uNDIsMS4zN2wzLjc2LDguOCw0LjY0LDEwLjVjLjQuMDYuNzMuMTkuOS40LjE5LjI1LjMyLjcxLjIzLDEuMDItLjU3LDEuOTctMS42NSwzLjY3LTMuMTIsNS4wMy0zLjU0LDMuMjktOC42MSw0LjA4LTEyLjksMS44NS0yLjc4LTEuNDUtNC45LTMuODUtNS43My02Ljg5LS4yLS43Mi4zMi0xLjM3LDEuMDgtMS40bDcuOTktMTkuMTRjLjExLS4yNS0uMTEtLjczLS4yLS45LTYuMTcsMS4xNS0xMS4xOSw0LjAyLTE2LjA5LDcuODQtNC44OCwzLjgtOS4zMiw4LjAxLTEzLjU4LDEyLjUzbDIuMTMsMi4zMSw0LjM1LDQuNjNjLjI0LS44OC4zOS0xLjY2Ljk2LTIuMy40OC0uNTQsMS4yNi0uOTIsMS45Ni0uNjMsMS4xNS40OCwxLjQsMS45Ni42NiwyLjkyLS40NS41OC0xLjE0LjYyLTEuODkuNDYtLjE4LjQtLjA5Ljg3LjE2LDEuMjYsMS4yMiwxLjk1LDMuOTgsMi45MSw1LjQ4LDEuNDkuNDUtLjQyLjktLjg2LDEuNDYtMS4xMS45LS40LDEuODMtLjM4LDIuNy4xNC42Ny40MSwxLjIzLDEuMiwxLjMxLDIuMTUuMTIsMS40OS0uNjgsMi44NS0yLjEsMy41MS0zLjAyLDEuNC02LjYuOTItOS4zNS0uOThsLTMuMTctMi42N2MtLjA4LDEuMDEtLjM2LDEuOTEtMS4wNywyLjUyLS41OS41LTEuMzIuNzItMi4wNi40NC0uNi0uMjItMS4xNi0uNzYtMS4yNy0xLjU4Wk0xOTQuMDcsMTgwLjM5aDcuNTFjLS4wNC0uNDUuMDgtLjguMzctMS4xNmwtNy45NC0xOC45OWMtLjI0LjA2LS40My4xNC0uNjEuMjl2MTguNjNjLjU0LjI2LjczLjcuNjcsMS4yM1pNMjYxLjI0LDE3OS4xNHYtMTYuMjJzLjAxLTIuNDMuMDEtMi40M2wtLjU5LS4yNC03Ljk2LDE5LjA0Yy4zNi4zMS40Ni42Ny40MSwxLjFoNy40OGMtLjAxLS41Mi4xNC0uOTQuNjUtMS4yNVpNMjYyLjc1LDE4MC4zOWg3Ljg0Yy0uMDQtLjQyLjA2LS43Ny4zNS0xLjExbC04LjM0LTE5LjA1LS41OC4yNHYxOC42N2MuNTYuMjMuNzIuNy43MywxLjI1Wk0xOTEuOTUsMTgwLjM5Yy0uMDQtLjYyLjE4LS45Ny42OC0xLjIzdi0xOC42MmMtLjE4LS4xMy0uNDEtLjIxLS41OS0uMjJsLTguMzIsMTguOTZjLjMxLjM0LjQxLjYyLjM3LDEuMDloNy44N1oiLz4KICAgICAgICAgIDwvZz4KICAgICAgICAgIDxnPgogICAgICAgICAgICA8cG9seWdvbiBjbGFzcz0iY2xzLTMiIHBvaW50cz0iMTMwLjI1IDEwNi44OCAxMzAuMjUgMTE5LjY2IDE0My4wMyAxMTkuNjYgMTQzLjAzIDEzMi40NCAxNTUuODEgMTMyLjQ0IDE1NS44MSAxMDYuODggMTMwLjI1IDEwNi44OCIvPgogICAgICAgICAgICA8cG9seWdvbiBjbGFzcz0iY2xzLTQiIHBvaW50cz0iMTEzLjM0IDEzMi40NCAxMTMuMzQgMTQwLjg5IDEyMS44IDE0MC44OSAxMjEuOCAxNDkuMzUgMTMwLjI1IDE0OS4zNSAxMzAuMjUgMTMyLjQ0IDExMy4zNCAxMzIuNDQiLz4KICAgICAgICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy00IiBwb2ludHM9IjEzMC4yNSAxNDkuMzUgMTMwLjI1IDE1Ny44IDEzOC43MSAxNTcuOCAxMzguNzEgMTY2LjI2IDE0Ny4xNiAxNjYuMjYgMTQ3LjE2IDE0OS4zNSAxMzAuMjUgMTQ5LjM1Ii8+CiAgICAgICAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtNCIgcG9pbnRzPSI5Ni40NCAxMTUuNTMgOTYuNDQgMTIzLjk5IDEwNC44OSAxMjMuOTkgMTA0Ljg5IDEzMi40NCAxMTMuMzQgMTMyLjQ0IDExMy4zNCAxMTUuNTMgOTYuNDQgMTE1LjUzIi8+CiAgICAgICAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtNCIgcG9pbnRzPSI5OC4xOCAxNTEuMDkgOTguMTggMTU3LjggMTA0Ljg5IDE1Ny44IDEwNC44OSAxNjQuNTEgMTExLjYgMTY0LjUxIDExMS42IDE1MS4wOSA5OC4xOCAxNTEuMDkiLz4KICAgICAgICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy00IiBwb2ludHM9IjExNS4wOSAxNjggMTE1LjA5IDE3NC43MSAxMjEuOCAxNzQuNzEgMTIxLjggMTgxLjQyIDEyOC41MSAxODEuNDIgMTI4LjUxIDE2OCAxMTUuMDkgMTY4Ii8+CiAgICAgICAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtNCIgcG9pbnRzPSI4MS4yNyAxMzQuMTkgODEuMjcgMTQwLjg5IDg3Ljk4IDE0MC44OSA4Ny45OCAxNDcuNiA5NC42OSAxNDcuNiA5NC42OSAxMzQuMTkgODEuMjcgMTM0LjE5Ii8+CiAgICAgICAgICAgIDxnPgogICAgICAgICAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtNCIgcG9pbnRzPSI3NC44MyAxNjEuNTYgNzQuODMgMTY2LjI2IDc5LjUzIDE2Ni4yNiA3OS41MyAxNzAuOTUgODQuMjMgMTcwLjk1IDg0LjIzIDE2MS41NiA3NC44MyAxNjEuNTYiLz4KICAgICAgICAgICAgICA8cG9seWdvbiBjbGFzcz0iY2xzLTQiIHBvaW50cz0iOTEuNzQgMTc4LjQ3IDkxLjc0IDE4My4xNiA5Ni40NCAxODMuMTYgOTYuNDQgMTg3Ljg2IDEwMS4xMyAxODcuODYgMTAxLjEzIDE3OC40NyA5MS43NCAxNzguNDciLz4KICAgICAgICAgICAgPC9nPgogICAgICAgICAgICA8cG9seWdvbiBjbGFzcz0iY2xzLTQiIHBvaW50cz0iNjcuNzIgMTg4LjI2IDY3LjcyIDE5MS42MiA3MS4wNyAxOTEuNjIgNzEuMDcgMTk0Ljk3IDc0LjQzIDE5NC45NyA3NC40MyAxODguMjYgNjcuNzIgMTg4LjI2Ii8+CiAgICAgICAgICA8L2c+CiAgICAgICAgPC9nPgogICAgICAgIDx0ZXh0IGNsYXNzPSJjbHMtMSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNjYuMjEgMjIwLjk4KSI+PHRzcGFuIHg9IjAiIHk9IjAiPtio2LHZhtin2YXYrCDYp9mE2KrYrdmI2YQg2KfZhNmF2KTYs9iz2Yo8L3RzcGFuPjwvdGV4dD4KICAgICAgICA8dGV4dCBjbGFzcz0iY2xzLTIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDY4LjA5IDIzOS41KSI+PHRzcGFuIHg9IjAiIHk9IjAiPklOU1RJVFVUSU9OQUwgVFJBTlNGT1JNQVRJT04gUFJPR1JBTTwvdHNwYW4+PC90ZXh0PgogICAgICA8L2c+CiAgICA8L2c+CiAgPC9nPgo8L3N2Zz4=" alt="الشعار">
+      </div>
+    </div>
+    <div style="justify-self:end;"></div>
+  </div>
+  <div class="pp-gold-bar"></div>
+</header>
+
+<!-- CHECK-IN PAGE -->
+<div class="page active" id="page-checkin">
+  <div class="checkin-hero">
+    <div class="hero-icon">📋</div>
+    <h1>تسجيل حضور الورشة</h1>
+    <p>يرجى إدخال اسمك الكامل ثم الضغط على تسجيل الحضور</p>
+  </div>
+
+  <div class="checkin-card">
+    <div class="form-group">
+      <label for="full-name">الاسم الكامل <span class="req">*</span></label>
+      <input type="text" id="full-name" placeholder="أدخل اسمك الكامل هنا..." autocomplete="name"
+             oninput="clearError()" onkeypress="if(event.key==='Enter')submitCheckin()">
+      <div class="field-error" id="name-error">⚠️ يرجى إدخال الاسم الكامل</div>
+    </div>
+    <button class="btn btn-primary" onclick="submitCheckin()" id="submit-btn">
+      <span>✓</span> تسجيل الحضور
+    </button>
+  </div>
+</div>
+
+<!-- SUCCESS PAGE -->
+<div class="page" id="page-success">
+  <div class="success-box">
+    <div class="success-icon">✅</div>
+    <h2>تم تسجيل حضوركم بنجاح!</h2>
+    <p>أهلاً وسهلاً، نتمنى لكم ورشة مثمرة.</p>
+    <div class="success-meta">
+      <div class="success-meta-item">👤 <span id="success-name"></span></div>
+      <div class="success-meta-item">📅 <span id="success-date"></span></div>
+      <div class="success-meta-item">⏰ <span id="success-time"></span></div>
+    </div>
+    <button class="btn btn-outline" style="max-width:260px;margin:0 auto;" onclick="resetCheckin()">
+      تسجيل حضور آخر
+    </button>
+  </div>
+</div>
+
+<!-- DUPLICATE PAGE -->
+<div class="page" id="page-duplicate">
+  <div class="success-box">
+    <div class="success-icon" style="font-size:60px;">⚠️</div>
+    <h2 style="color:var(--gold-dark);">تم تسجيل هذا الاسم مسبقاً</h2>
+    <p>الاسم "<strong id="dup-name"></strong>" مسجل في قائمة الحضور.</p>
+    <p style="margin-top:8px;">إذا كنت تعتقد أن هذا خطأ، يرجى التواصل مع المنظمين.</p>
+    <button class="btn btn-outline" style="max-width:260px;margin:20px auto 0;" onclick="resetCheckin()">
+      رجوع
+    </button>
+  </div>
+</div>
+
+<!-- LOGIN PAGE -->
+<div class="page" id="page-login">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div style="font-size:40px;margin-bottom:12px;">🔐</div>
+      <h2>لوحة تحكم الإدارة</h2>
+      <p>أدخل بيانات الدخول للوصول إلى سجلات الحضور</p>
+      <div class="login-field"><label>اسم المستخدم</label><input type="text" id="login-user" placeholder="اسم المستخدم"></div>
+      <div class="login-field"><label>كلمة المرور</label><input type="password" id="login-pass" placeholder="••••••••" onkeypress="if(event.key==='Enter')doLogin()"></div>
+      <div class="login-err" id="login-err">⚠️ بيانات الدخول غير صحيحة</div>
+      <button class="btn btn-primary" style="margin-top:10px;" onclick="doLogin()">تسجيل الدخول</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div class="page page-wide" id="page-admin">
+  <div class="admin-header-bar">
+    <div class="admin-tabs">
+      <button class="btn btn-primary btn-sm" id="at-overview" onclick="showAdminTab('overview')">📊 نظرة عامة</button>
+      <button class="btn btn-outline btn-sm" id="at-records" onclick="showAdminTab('records')">📋 سجل الحضور</button>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn btn-outline btn-sm" onclick="refreshAdmin()">🔄 تحديث</button>
+      <button class="btn btn-outline btn-sm" onclick="adminLogout()">خروج</button>
+    </div>
+  </div>
+
+  <!-- OVERVIEW TAB -->
+  <div id="admin-tab-overview">
+    <div class="admin-section-title">📊 إحصائيات الحضور</div>
+    <div class="kpi-grid" id="kpi-grid"></div>
+    <div style="background:white;border-radius:10px;border:0.5px solid var(--border);padding:20px;margin-bottom:16px;">
+      <div style="font-size:15px;font-weight:600;color:var(--teal-dark);margin-bottom:14px;">⏱️ آخر 10 تسجيلات</div>
+      <div id="recent-list"></div>
+    </div>
+  </div>
+
+  <!-- RECORDS TAB -->
+  <div id="admin-tab-records" style="display:none;">
+    <div class="admin-section-title">📋 سجل الحضور الكامل</div>
+    <div class="filter-bar">
+      <input type="text" id="search-input" placeholder="🔍 بحث بالاسم..." oninput="filterRecords()">
+      <select id="filter-date" onchange="filterRecords()" style="border:1.5px solid var(--border);border-radius:6px;padding:8px 12px;font-family:inherit;font-size:13px;background:white;">
+        <option value="">جميع التواريخ</option>
+      </select>
+      <button class="btn btn-outline btn-sm" onclick="clearFilters()">مسح</button>
+    </div>
+    <div class="export-bar">
+      <button class="btn btn-gold btn-sm" onclick="exportExcel()">📥 تصدير Excel</button>
+      <button class="btn btn-outline btn-sm" onclick="exportCSV()">📄 تصدير CSV</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>#</th><th>الاسم الكامل</th><th>التاريخ</th><th>الوقت</th><th>المتصفح</th>
+        </tr></thead>
+        <tbody id="records-tbody"></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+    <div style="font-size:12px;color:var(--text-secondary);text-align:center;margin-top:8px;" id="records-count"></div>
+  </div>
+</div>
+
+<footer class="pp-footer">
+  <div>النيابة العامة – المملكة العربية السعودية | <a href="https://www.pp.gov.sa">www.pp.gov.sa</a></div>
+  <div style="margin-top:4px;">نظام تسجيل الحضور © 2026</div>
+</footer>
+
+<script>
+// ===== CONFIGURATION =====
+// ⚙️ غيّري هذا الرابط برابط Apps Script الخاص بك
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
+// ⚙️ السماح بالتسجيل المتكرر — true = مسموح، false = ممنوع
+const ALLOW_DUPLICATES = false;
+
+// ⚙️ بيانات الدخول للوحة التحكم
+const ADMIN_USER = 'admin';
+const ADMIN_PASS = 'ITP@2025';
+
+// ===== STATE =====
+let allRecords = [];
+let filteredRecords = [];
+let isLoggedIn = false;
+let currentPage = 1;
+const PER_PAGE = 20;
+
+// ===== NAVIGATION =====
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  if(['checkin','success','duplicate'].includes(id)) document.getElementById('tab-checkin').classList.add('active');
+  if(id === 'admin') document.getElementById('tab-admin').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function showAdminLogin() {
+  if(isLoggedIn) { showPage('admin'); refreshAdmin(); }
+  else showPage('login');
+}
+
+function adminLogout() { isLoggedIn = false; showPage('checkin'); }
+
+function doLogin() {
+  const u = document.getElementById('login-user').value;
+  const p = document.getElementById('login-pass').value;
+  if(u === ADMIN_USER && p === ADMIN_PASS) {
+    isLoggedIn = true;
+    document.getElementById('login-err').style.display = 'none';
+    showPage('admin');
+    document.getElementById('tab-admin').classList.add('active');
+    refreshAdmin();
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+  }
+}
+
+// ===== CHECK-IN =====
+function clearError() {
+  document.getElementById('name-error').style.display = 'none';
+  document.getElementById('full-name').classList.remove('error');
+}
+
+function resetCheckin() {
+  document.getElementById('full-name').value = '';
+  clearError();
+  showPage('checkin');
+  setTimeout(() => document.getElementById('full-name').focus(), 300);
+}
+
+async function submitCheckin() {
+  const rawName = document.getElementById('full-name').value;
+  const name = rawName.trim().replace(/\s+/g, ' ');
+
+  // التحقق من الاسم
+  if(!name || name.length < 2) {
+    document.getElementById('name-error').style.display = 'block';
+    document.getElementById('full-name').classList.add('error');
+    document.getElementById('full-name').focus();
+    return;
+  }
+
+  // منع الإدخالات غير المنطقية
+  if(/^[\d\s\p{P}]+$/u.test(name)) {
+    document.getElementById('name-error').textContent = '⚠️ يرجى إدخال اسم صحيح';
+    document.getElementById('name-error').style.display = 'block';
+    document.getElementById('full-name').classList.add('error');
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;margin:0;"></div> جاري التسجيل...';
+  showLoading(true);
+
+  try {
+    const now = new Date();
+    const deviceId = getDeviceId();
+    const browser = getBrowser();
+
+    const payload = {
+      action: 'submit',
+      name: name,
+      deviceId: deviceId,
+      browser: browser,
+      allowDuplicates: ALLOW_DUPLICATES,
+      timestamp: now.toISOString(),
+      date: now.toLocaleDateString('ar-SA', {year:'numeric',month:'long',day:'numeric'}),
+      time: now.toLocaleTimeString('ar-SA', {hour:'2-digit',minute:'2-digit'})
+    };
+
+    const result = await appsScriptRequest(payload);
+
+    if(result.status === 'duplicate') {
+      document.getElementById('dup-name').textContent = name;
+      showPage('duplicate');
+    } else if(result.status === 'ok') {
+      document.getElementById('success-name').textContent = name;
+      document.getElementById('success-date').textContent = payload.date;
+      document.getElementById('success-time').textContent = payload.time;
+      showPage('success');
+    } else {
+      showToast('حدث خطأ، يرجى المحاولة مرة أخرى', 'error');
+    }
+  } catch(err) {
+    console.error(err);
+    showToast('تعذر الاتصال بالخادم، تحقق من الإنترنت', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>✓</span> تسجيل الحضور';
+    showLoading(false);
+  }
+}
+
+// ===== APPS SCRIPT API =====
+function appsScriptRequest(payload) {
+  return new Promise((resolve, reject) => {
+    const cbName = 'cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    const params = new URLSearchParams({ ...payload, callback: cbName, _t: Date.now() });
+    const url = APPS_SCRIPT_URL + '?' + params.toString();
+    const script = document.createElement('script');
+    const timeout = setTimeout(() => {
+      delete window[cbName];
+      if(script.parentNode) document.body.removeChild(script);
+      reject(new Error('Timeout'));
+    }, 15000);
+    window[cbName] = (data) => {
+      clearTimeout(timeout);
+      delete window[cbName];
+      if(script.parentNode) document.body.removeChild(script);
+      resolve(data);
+    };
+    script.src = url;
+    script.onerror = () => { clearTimeout(timeout); reject(new Error('Script error')); };
+    document.body.appendChild(script);
+  });
+}
+
+// ===== ADMIN =====
+async function refreshAdmin() {
+  showLoading(true);
+  try {
+    const result = await appsScriptRequest({ action: 'getAttendance' });
+    allRecords = result.records || [];
+    renderOverview();
+    renderRecords();
+    populateDateFilter();
+  } catch(err) {
+    showToast('تعذر تحميل البيانات', 'error');
+  } finally {
+    showLoading(false);
+  }
+}
+
+function showAdminTab(t) {
+  ['overview','records'].forEach(tab => {
+    document.getElementById('admin-tab-'+tab).style.display = 'none';
+    document.getElementById('at-'+tab).className = 'btn btn-outline btn-sm';
+  });
+  document.getElementById('admin-tab-'+t).style.display = 'block';
+  document.getElementById('at-'+t).className = 'btn btn-primary btn-sm';
+  if(t === 'records') filterRecords();
+}
+
+function renderOverview() {
+  const total = allRecords.length;
+  const today = new Date().toLocaleDateString('ar-SA');
+  const todayCount = allRecords.filter(r => r.date && r.date.includes(new Date().getDate())).length;
+  const last = allRecords.length > 0 ? allRecords[allRecords.length-1] : null;
+
+  document.getElementById('kpi-grid').innerHTML = `
+    <div class="kpi-card"><div class="kpi-icon">👥</div><div class="kpi-label">إجمالي الحضور</div><div class="kpi-value">${total}</div></div>
+    <div class="kpi-card"><div class="kpi-icon">📅</div><div class="kpi-label">حضور اليوم</div><div class="kpi-value">${todayCount}</div></div>
+    <div class="kpi-card"><div class="kpi-icon">⏰</div><div class="kpi-label">آخر تسجيل</div><div class="kpi-value" style="font-size:16px;">${last ? last.time : '—'}</div><div class="kpi-sub">${last ? last.name : ''}</div></div>
+  `;
+
+  const recent = [...allRecords].reverse().slice(0,10);
+  document.getElementById('recent-list').innerHTML = recent.length
+    ? recent.map((r,i) => `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:0.5px solid #f0f0f0;font-size:14px;">
+        <span style="background:var(--teal-light);color:var(--teal-dark);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;">${total - i}</span>
+        <div style="flex:1;"><div style="font-weight:600;">${r.name}</div><div style="font-size:12px;color:var(--text-secondary);">${r.date} — ${r.time}</div></div>
+        <span class="badge badge-success">✓</span>
+      </div>`).join('')
+    : '<p style="color:var(--text-secondary);font-size:14px;text-align:center;padding:20px;">لا توجد سجلات بعد</p>';
+}
+
+function filterRecords() {
+  const search = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const dateFilter = document.getElementById('filter-date')?.value || '';
+  filteredRecords = allRecords.filter(r => {
+    if(search && !(r.name||'').toLowerCase().includes(search)) return false;
+    if(dateFilter && r.rawDate !== dateFilter) return false;
+    return true;
+  });
+  currentPage = 1;
+  renderTable();
+}
+
+function clearFilters() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('filter-date').value = '';
+  filterRecords();
+}
+
+function renderRecords() {
+  filteredRecords = [...allRecords];
+  renderTable();
+}
+
+function renderTable() {
+  const start = (currentPage-1)*PER_PAGE;
+  const page = filteredRecords.slice(start, start+PER_PAGE);
+  const tbody = document.getElementById('records-tbody');
+
+  if(!filteredRecords.length) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-secondary);padding:32px;">لا توجد سجلات</td></tr>`;
+    document.getElementById('pagination').innerHTML = '';
+    document.getElementById('records-count').textContent = '';
+    return;
+  }
+
+  tbody.innerHTML = page.map((r, i) => `<tr>
+    <td style="color:var(--text-secondary);font-size:12px;">${start+i+1}</td>
+    <td style="font-weight:600;">${r.name}</td>
+    <td>${r.date}</td>
+    <td>${r.time}</td>
+    <td style="font-size:12px;color:var(--text-secondary);">${r.browser||'—'}</td>
+  </tr>`).join('');
+
+  document.getElementById('records-count').textContent = `إجمالي: ${filteredRecords.length} سجل`;
+
+  const totalPages = Math.ceil(filteredRecords.length/PER_PAGE);
+  document.getElementById('pagination').innerHTML = totalPages > 1
+    ? Array.from({length:totalPages}, (_,i) => `<button class="page-btn ${i+1===currentPage?'active':''}" onclick="goPage(${i+1})">${i+1}</button>`).join('')
+    : '';
+}
+
+function goPage(p) { currentPage = p; renderTable(); }
+
+function populateDateFilter() {
+  const dates = [...new Set(allRecords.map(r => r.rawDate).filter(Boolean))].sort().reverse();
+  const sel = document.getElementById('filter-date');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">جميع التواريخ</option>' + dates.map(d => `<option value="${d}">${d}</option>`).join('');
+  if(current) sel.value = current;
+}
+
+// ===== EXPORT =====
+function exportExcel() {
+  if(!allRecords.length) { showToast('لا توجد بيانات للتصدير', 'error'); return; }
+  const wb = XLSX.utils.book_new();
+  const data = filteredRecords.map((r,i) => ({
+    '#': i+1, 'الاسم الكامل': r.name, 'التاريخ': r.date, 'الوقت': r.time, 'المتصفح': r.browser||''
+  }));
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), 'الحضور');
+  XLSX.writeFile(wb, `attendance_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+function exportCSV() {
+  if(!allRecords.length) { showToast('لا توجد بيانات للتصدير', 'error'); return; }
+  const headers = ['#','الاسم الكامل','التاريخ','الوقت','المتصفح'];
+  const rows = filteredRecords.map((r,i) => [i+1, r.name, r.date, r.time, r.browser||'']);
+  const csv = '\uFEFF' + [headers,...rows].map(r => r.map(c => '"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'}));
+  a.download = `attendance_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+// ===== UI HELPERS =====
+function showLoading(show) {
+  document.getElementById('loading-overlay').classList.toggle('show', show);
+}
+
+function showToast(msg, type='info') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.background = type==='error'?'#dc3545':type==='success'?'#02807A':'#309C99';
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+// ===== DEVICE HELPERS =====
+function getDeviceId() {
+  let id = localStorage.getItem('device_id');
+  if(!id) { id = 'DEV-' + Math.random().toString(36).slice(2,10).toUpperCase(); localStorage.setItem('device_id', id); }
+  return id;
+}
+
+function getBrowser() {
+  const ua = navigator.userAgent;
+  if(ua.includes('Chrome') && !ua.includes('Edg')) return 'Chrome';
+  if(ua.includes('Safari') && !ua.includes('Chrome')) return 'Safari';
+  if(ua.includes('Firefox')) return 'Firefox';
+  if(ua.includes('Edg')) return 'Edge';
+  return 'Other';
+}
+
+// ===== INIT =====
+document.getElementById('full-name').focus();
+</script>
+</body>
+</html>
