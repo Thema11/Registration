@@ -157,7 +157,6 @@ tbody tr:last-child td{border-bottom:none;}
 </head>
 <body>
 
-<!-- LOADING OVERLAY -->
 <div class="loading-overlay" id="loading-overlay">
   <div class="loading-box">
     <div class="spinner"></div>
@@ -165,10 +164,8 @@ tbody tr:last-child td{border-bottom:none;}
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- HEADER -->
 <header class="pp-header">
   <div class="pp-header-inner">
     <div style="justify-self:start;">
@@ -179,7 +176,8 @@ tbody tr:last-child td{border-bottom:none;}
     </div>
     <div class="pp-logo-area">
       <div class="pp-emblem">
-        <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMiIgZGF0YS1uYW1lPSJMYXllciAyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNDEuMDggMzQxLjA4Ij4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLmNscy0xIHsKICAgICAgICBmb250LXNpemU6IDIwLjAxcHg7CiAgICAgIH0KCiAgICAgIC5jbHMtMSwgLmNscy0yIHsKICAgICAgICBmb250LWZhbWlseTogQmFoaWpUaGVTYW5zQXJhYmljLUJvbGQsICdCYWhpaiBUaGVTYW5zQXJhYmljJzsKICAgICAgICBmb250LXdlaWdodDogNzAwOwogICAgICB9CgogICAgICAuY2xzLTEsIC5jbHMtMyB7CiAgICAgICAgZmlsbDogI2I3ODUyZTsKICAgICAgfQoKICAgICAgLmNscy00LCAuY2xzLTIgewogICAgICAgIGZpbGw6ICNmZmY7CiAgICAgIH0KCiAgICAgIC5jbHMtNSB7CiAgICAgICAgZmlsbDogIzAwNmQ2NzsKICAgICAgfQoKICAgICAgLmNscy0yIHsKICAgICAgICBmb250LXNpemU6IDEwLjI2cHg7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxnIGlkPSJMYXllcl8xIiBkYXRhLW5hbWU9IkxheWVyIDEiPgogICAgPGc+CiAgICAgIAogICAgICA8Zz4KICAgICAgICA8Zz4KICAgICAgICAgIDxnPgogICAgICAgICAgICA8cGF0aCBjbGFzcz0iY2xzLTQiIGQ9Ik0yMjcuNzYsMTYxLjY2Yy43My0uMzQsMS4wNC0uOTIuOTQtMS42Mi0uMS0uNjYtLjYzLTEuMTItMS4zMy0xLjE1cy0xLjIzLjQtMS4zOCwxLjA5LjE0LDEuMzYuOSwxLjY1djEwLjA5Yy0uMTMuMTItLjQyLjE4LS41NS4xM3MtLjI5LS4yOC0uMjktLjQ1Yy0uMTQtMy44LTEuNC03LjM3LTMuODItMTAuMzkuODQtMy4yLDEuNDItNi4zOCwxLjg3LTkuNjgsMS4xNS04LjQ0LDEuNDctMTcuMzctLjM4LTI1LjY4LTIuMzQsMy41Mi0zLjY2LDcuNjMtNC43LDExLjcxLS45NywzLjgxLTEuNiw3LjYxLTIuMTUsMTEuNDctLjk1LTIuMTYtMS40NS00LjI0LTEuNjYtNi41LS41OC02LjQ4LjQxLTEyLjg2LDIuODMtMTguOTctMi4wNiwxLjM2LTMuODQsMi44NC01LjQ0LDQuNTktMS45MSwyLjA5LTMuNiw0LjI0LTUuMTcsNi42LTIuMjQsMy4zNy00LjA4LDYuOC01LjczLDEwLjY5LTEuMDgtNi41OSwxLjE2LTEzLDQuNjEtMTguNTQsMS45NC0zLjExLDQuMjEtNS44OCw2Ljk5LTguMzEtMS44My4zLTMuNDcuODctNS4xNCwxLjYyLTcuMzYsMy4zLTE0LjAzLDkuNDQtMTkuMzMsMTUuNjguNTUtMy4xNSwxLjc5LTUuOTMsMy4zNS04LjU2LDQuNTQtNy42MywxMi4wMS0xMy40NSwyMC40NS0xNS45My0xLjQtLjI2LTIuNjQtLjMxLTMuOTgtLjI0LTIuNTQuMTUtNC45NS41Mi03LjQzLDEuMTQtNC42MSwxLjE2LTguOTQsMi44MS0xMy4yNyw1LjAyLjgtMS4yOCwxLjc0LTIuMzEsMi44MS0zLjMxLDQuMDItMy43Nyw5LjQ1LTYuNTYsMTQuNzUtOC4xNiwzLjk3LTEuMTksNy45OS0xLjczLDEyLjEzLTEuNDYtMS4yMi0xLjQ1LTIuODItMi4yNS00LjU5LTMuMiwyLjY5LS44MSw1LjQ5LS42MSw3Ljk4Ljc4LS43OC0xLjYxLTIuMDUtMi43Ni0zLjM2LTQsMi43NC0uMDEsNS4xNCwxLjEyLDcuMjIsMi44NC4zMi0xLjcxLDEuMTMtMy4yMSwyLjQxLTQuNDcsMS4zMiwxLjE5LDIuMTEsMi43MiwyLjQ2LDQuNTEsMi4wNS0xLjc2LDQuNDktMi44OCw3LjIzLTIuODktMS4zMiwxLjIxLTIuNTQsMi4zNS0zLjM5LDQsMS4zNC0uNjIsMi42Ni0xLjE4LDQuMTgtMS4yMiwxLjMxLS4wNCwyLjU3LjA1LDMuODEuNDQtMS42My44OC0zLjQ0LDEuNzYtNC41NywzLjIxLDguODEtLjU3LDE4LjUzLDIuNzcsMjUuMzksOC4zNiwxLjYyLDEuMzIsMy4wOCwyLjc0LDQuMjIsNC41Ny00LjQ1LTIuMjgtOC45Mi0zLjk4LTEzLjY4LTUuMTItMy4zMy0uOC03LjQ2LTEuNDQtMTAuODgtLjgsOC41NSwyLjYsMTUuOTIsOC4zNCwyMC40OCwxNi4xMSwxLjU0LDIuNjEsMi42OCw1LjQsMy4yOCw4LjQ0LTQuODMtNS42OS0xMC42OS0xMS4yLTE3LjI0LTE0LjctMi4yOS0xLjIyLTQuNi0yLjE5LTcuMTktMi42NSwxLjEsMS4xLDIuMjEsMi4xLDMuMjMsMy4yOCw1LjM5LDYuMjcsOS43LDE1LjA4LDguMywyMy42Mi0yLjEtNC45OC00LjcxLTkuNjYtOC4wMi0xMy45NS0yLjMzLTMuMDItNS4wMi01LjkzLTguMzQtNy45OCwyLjMzLDUuODMsMy4zNSwxMS45NywyLjkyLDE4LjIxLS4xOCwyLjUtLjY3LDQuODktMS43Myw3LjIzLS42Mi00LjI1LTEuMy04LjIxLTIuMzYtMTIuMjMtLjk5LTMuNzQtMi4yNi03LjY0LTQuNDgtMTAuOTMtMi4xNSw5LjU3LTEuNDEsMjAuMDkuMjUsMjkuNjJsMS4yNSw1LjcyYy0yLjM3LDMuMDEtMy43NCw2LjU5LTMuODMsMTAuNDQsMCwuMjItLjI1LjQzLS40MS40NS0uMjQuMDItLjQzLS4yMi0uNDMtLjUydi05LjY5WiIvPgogICAgICAgICAgICA8cGF0aCBjbGFzcz0iY2xzLTQiIGQ9Ik0yMzAuNDEsMTkxLjljLS4xLS43Ny4zNS0xLjQ1LDEuMDctMS42NmwxLjMyLS4zOWMuNDktLjM5LjQ4LTEuMTIuMDMtMS42bC01LjUxLTUuODgtNS42MSw2Yy0uMjQuMjUtLjI0LjgxLS4xNSwxLjA2LjMzLjg4LDIuMS4zNCwyLjYxLDEuNzMuMzEuODYtLjEzLDEuNjktLjgyLDIuMTVzLTEuNjIuMzQtMi4zMi0uMmMtLjc4LS42MS0xLjA2LTEuNTQtMS4xOC0yLjU4bC0yLjIxLDEuOTNjLTIuNzUsMi4zOS02LjQ3LDMuMjEtOS45LDEuODctLjkzLS4zNi0xLjczLTEuMDMtMi4xNi0xLjktLjc2LTEuNTQtLjI1LTMuMzksMS4zMi00LjExLDEuMTMtLjUyLDIuNDctLjE3LDMuMzQuNzMsMS41LDEuNTUsMy4yNCwxLjM3LDQuOTQuMDcsMS40MS0xLjA4LDEuNjUtMi41NS44My0yLjM2cy0xLjQ4LS4yMy0xLjgtLjk2Yy0uNDEtLjk2LS4wMi0yLjIxLDEuMDQtMi41LjczLS4yLDEuNDQuMjIsMS45Ljc3LjUyLjYxLjY4LDEuMzQuODcsMi4xOWwyLjcxLTIuODIsMy43OS00LjEyLTUuOC01LjhjLTIuNi0yLjYtNS4zOC00Ljg3LTguMjktNy4xMS00LjYzLTMuNTctOS44NC02LjQyLTE1LjYtNy40NWwtLjIyLjcsMi40Myw1LjkyLDUuNTksMTMuNDFjLjgyLjEsMS4yNy43NSwxLjA5LDEuNDItLjU3LDIuMTItMS43OCwzLjg5LTMuMzgsNS4zLTQuMjMsMy43MS0xMC4zOCwzLjgxLTE0LjcxLjIxLTEuNzUtMS40Ni0zLjEyLTMuMzUtMy42Ny01LjYtLjE5LS43Ni40NS0xLjI3LDEuMTMtMS4zM2w2LjUtMTQuNzcsMS45MS00LjQ2Yy0uMjYtLjQ2LS40LS44NC0uMzktMS40LTEuODgtLjM2LTMuNzQtLjQ1LTUuODMtLjU1LDIuOTctMS40Myw2LjIyLTEuOTEsOS41Mi0xLjYzLDcuNi42NCwxNC4xMSwzLjcxLDIwLjEyLDguMjcsMi40OSwxLjg5LDQuNzYsMy44OCw2Ljk1LDYuMDlsMi4zLDIuMzIsMy4xOCwzLjM2YzguOTQtOS43NCwxOC43Ny0xOC45MiwzMi42LTIwLjA1LDMuMjYtLjI3LDYuNDguMjEsOS40MSwxLjYxLTIuMDMuMS0zLjg1LjE3LTUuNzQuNTItLjAyLjUyLS4xMi45My0uNDIsMS4zN2wzLjc2LDguOCw0LjY0LDEwLjVjLjQuMDYuNzMuMTkuOS40LjE5LjI1LjMyLjcxLjIzLDEuMDItLjU3LDEuOTctMS42NSwzLjY3LTMuMTIsNS4wMy0zLjU0LDMuMjktOC42MSw0LjA4LTEyLjksMS44NS0yLjc4LTEuNDUtNC45LTMuODUtNS43My02Ljg5LS4yLS43Mi4zMi0xLjM3LDEuMDgtMS40bDcuOTktMTkuMTRjLjExLS4yNS0uMTEtLjczLS4yLS45LTYuMTcsMS4xNS0xMS4xOSw0LjAyLTE2LjA5LDcuODQtNC44OCwzLjgtOS4zMiw4LjAxLTEzLjU4LDEyLjUzbDIuMTMsMi4zMSw0LjM1LDQuNjNjLjI0LS44OC4zOS0xLjY2Ljk2LTIuMy40OC0uNTQsMS4yNi0uOTIsMS45Ni0uNjMsMS4xNS40OCwxLjQsMS45Ni42NiwyLjkyLS40NS41OC0xLjE0LjYyLTEuODkuNDYtLjE4LjQtLjA5Ljg3LjE2LDEuMjYsMS4yMiwxLjk1LDMuOTgsMi45MSw1LjQ4LDEuNDkuNDUtLjQyLjktLjg2LDEuNDYtMS4xMS45LS40LDEuODMtLjM4LDIuNy4xNC42Ny40MSwxLjIzLDEuMiwxLjMxLDIuMTUuMTIsMS40OS0uNjgsMi44NS0yLjEsMy41MS0zLjAyLDEuNC02LjYuOTItOS4zNS0uOThsLTMuMTctMi42N2MtLjA4LDEuMDEtLjM2LDEuOTEtMS4wNywyLjUyLS41OS41LTEuMzIuNzItMi4wNi40NC0uNi0uMjItMS4xNi0uNzYtMS4yNy0xLjU4Wk0xOTQuMDcsMTgwLjM5aDcuNTFjLS4wNC0uNDUuMDgtLjguMzctMS4xNmwtNy45NC0xOC45OWMtLjI0LjA2LS40My4xNC0uNjEuMjl2MTguNjNjLjU0LjI2LjczLjcuNjcsMS4yM1pNMjYxLjI0LDE3OS4xNHYtMTYuMjJzLjAxLTIuNDMuMDEtMi40M2wtLjU5LS4yNC03Ljk2LDE5LjA0Yy4zNi4zMS40Ni42Ny40MSwxLjFoNy40OGMtLjAxLS41Mi4xNC0uOTQuNjUtMS4yNVpNMjYyLjc1LDE4MC4zOWg3Ljg0Yy0uMDQtLjQyLjA2LS43Ny4zNS0xLjExbC04LjM0LTE5LjA1LS41OC4yNHYxOC42N2MuNTYuMjMuNzIuNy43MywxLjI1Wk0xOTEuOTUsMTgwLjM5Yy0uMDQtLjYyLjE4LS45Ny42OC0xLjIzdi0xOC42MmMtLjE4LS4xMy0uNDEtLjIxLS41OS0uMjJsLTguMzIsMTguOTZjLjMxLjM0LjQxLjYyLjM3LDEuMDloNy44N1oiLz4KICAgICAgICAgIDwvZz4KICAgICAgICAgIDxnPgogICAgICAgICAgICA8cG9seWdvbiBjbGFzcz0iY2xzLTMiIHBvaW50cz0iMTMwLjI1IDEwNi44OCAxMzAuMjUgMTE5LjY2IDE0My4wMyAxMTkuNjYgMTQzLjAzIDEzMi40NCAxNTUuODEgMTMyLjQ0IDE1NS44MSAxMDYuODggMTMwLjI1IDEwNi44OCIvPgogICAgICAgICAgICA8cG9seWdvbiBjbGFzcz0iY2xzLTQiIHBvaW50cz0iMTEzLjM0IDEzMi40NCAxMTMuMzQgMTQwLjg5IDEyMS44IDE0MC44OSAxMjEuOCAxNDkuMzUgMTMwLjI1IDE0OS4zNSAxMzAuMjUgMTMyLjQ0IDExMy4zNCAxMzIuNDQiLz4KICAgICAgICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy00IiBwb2ludHM9IjEzMC4yNSAxNDkuMzUgMTMwLjI1IDE1Ny44IDEzOC43MSAxNTcuOCAxMzguNzEgMTY2LjI2IDE0Ny4xNiAxNjYuMjYgMTQ3LjE2IDE0OS4zNSAxMzAuMjUgMTQ5LjM1Ii8+CiAgICAgICAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtNCIgcG9pbnRzPSI5Ni40NCAxMTUuNTMgOTYuNDQgMTIzLjk5IDEwNC44OSAxMjMuOTkgMTA0Ljg5IDEzMi40NCAxMTMuMzQgMTMyLjQ0IDExMy4zNCAxMTUuNTMgOTYuNDQgMTE1LjUzIi8+CiAgICAgICAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtNCIgcG9pbnRzPSI5OC4xOCAxNTEuMDkgOTguMTggMTU3LjggMTA0Ljg5IDE1Ny44IDEwNC44OSAxNjQuNTEgMTExLjYgMTY0LjUxIDExMS42IDE1MS4wOSA5OC4xOCAxNTEuMDkiLz4KICAgICAgICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy00IiBwb2ludHM9IjExNS4wOSAxNjggMTE1LjA5IDE3NC43MSAxMjEuOCAxNzQuNzEgMTIxLjggMTgxLjQyIDEyOC41MSAxODEuNDIgMTI4LjUxIDE2OCAxMTUuMDkgMTY4Ii8+CiAgICAgICAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtNCIgcG9pbnRzPSI4MS4yNyAxMzQuMTkgODEuMjcgMTQwLjg5IDg3Ljk4IDE0MC44OSA4Ny45OCAxNDcuNiA5NC42OSAxNDcuNiA5NC42OSAxMzQuMTkgODEuMjcgMTM0LjE5Ii8+CiAgICAgICAgICAgIDxnPgogICAgICAgICAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtNCIgcG9pbnRzPSI3NC44MyAxNjEuNTYgNzQuODMgMTY2LjI2IDc5LjUzIDE2Ni4yNiA3OS41MyAxNzAuOTUgODQuMjMgMTcwLjk1IDg0LjIzIDE2MS41NiA3NC44MyAxNjEuNTYiLz4KICAgICAgICAgICAgICA8cG9seWdvbiBjbGFzcz0iY2xzLTQiIHBvaW50cz0iOTEuNzQgMTc4LjQ3IDkxLjc0IDE4My4xNiA5Ni40NCAxODMuMTYgOTYuNDQgMTg3Ljg2IDEwMS4xMyAxODcuODYgMTAxLjEzIDE3OC40NyA5MS43NCAxNzguNDciLz4KICAgICAgICAgICAgPC9nPgogICAgICAgICAgICA8cG9seWdvbiBjbGFzcz0iY2xzLTQiIHBvaW50cz0iNjcuNzIgMTg4LjI2IDY3LjcyIDE5MS42MiA3MS4wNyAxOTEuNjIgNzEuMDcgMTk0Ljk3IDc0LjQzIDE5NC45NyA3NC40MyAxODguMjYgNjcuNzIgMTg4LjI2Ii8+CiAgICAgICAgICA8L2c+CiAgICAgICAgPC9nPgogICAgICAgIDx0ZXh0IGNsYXNzPSJjbHMtMSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNjYuMjEgMjIwLjk4KSI+PHRzcGFuIHg9IjAiIHk9IjAiPtio2LHZhtin2YXYrCDYp9mE2KrYrdmI2YQg2KfZhNmF2KTYs9iz2Yo8L3RzcGFuPjwvdGV4dD4KICAgICAgICA8dGV4dCBjbGFzcz0iY2xzLTIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDY4LjA5IDIzOS41KSI+PHRzcGFuIHg9IjAiIHk9IjAiPklOU1RJVFVUSU9OQUwgVFJBTlNGT1JNQVRJT04gUFJPR1JBTTwvdHNwYW4+PC90ZXh0PgogICAgICA8L2c+CiAgICA8L2c+CiAgPC9nPgo8L3N2Zz4=" alt="الشعار">
+        <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMiIgZGF0YS1uYW1lPSJMYXllciAyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNDEuMDggMzQxLjA4Ij4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLmNscy0xIHsKICAgICAgICBmb250LXNpemU6IDIwLjAxcHg7CiAgICAgIH0KCiAgICAgIC5jbHMtMSwgLmNscy0yIHsKICAgICAgICBmb250LWZhbWlseTogQmFoaWpUaGVTYW5zQXJhYmljLUJvbGQsICdCYWhpaiBUaGVTYW5zQXJhYmljJzsKICAgICAgICBmb250LXdlaWdodDogNzAwOwogICAgICB9CgogICAgICAuY2xzLTEsIC5jbHMtMyB7CiAgICAgICAgZmlsbDogI2I3ODUyZTsKICAgICAgfQoKICAgICAgLmNscy00LCAuY2xzLTIgewogICAgICAgIGZpbGw6ICNmZmY7CiAgICAgIH0KCiAgICAgIC5jbHMtNSB7CiAgICAgICAgZmlsbDogIzAwNmQ2NzsKICAgICAgfQoKICAgICAgLmNscy0yIHsKICAgICAgICBmb250LXNpemU6IDEwLjI2cHg7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxnIGlkPSJMYXllcl8xIiBkYXRhLW5hbWU9IkxheWVyIDEiPgogICAgPGc+CiAgICAgIAogICAgICA8Zz4KICAgICAgICA8Zz4KICAgICAgICAgIDxnPgogICAgICAgICAgICA8cGF0aCBjbGFzcz0iY2xzLTQiIGQ9Ik0yMjcuNzYsMTYxLjY2Yy43My0uMzQsMS4wNC0uOTIuOTQtMS42Mi0uMS0uNjYtLjYzLTEuMTItMS4zMy0xLjE1cy0xLjIzLjQtMS4zOCwxLjA5LjE0LDEuMzYuOSwxLjY1djEwLjA5Yy0uMTMuMTItLjQyLjE4LS41NS4xM3MtLjI5LS4yOC0uMjktLjQ1Yy0uMTQtMy44LTEuNC03LjM3LTMuODItMTAuMzkuODQtMy4yLDEuNDItNi4zOCwxLjg3LTkuNjgsMS4xNS04LjQ0LDEuNDctMTcuMzctLjM4LTI1LjY4LTIuMzQsMy41Mi0zLjY2LDcuNjMtNC43LDExLjcxLS45NywzLjgxLTEuNiw3LjYxLTIuMTUsMTEuNDctLjk1LTIuMTYtMS40NS00LjI0LTEuNjYtNi41LS41OC02LjQ4LjQxLTEyLjg2LDIuODMtMTguOTctMi4wNiwxLjM2LTMuODQsMi44NC01LjQ0LDQuNTktMS45MSwyLjA5LTMuNiw0LjI0LTUuMTcsNi42LTIuMjQsMy4zNy00LjA4LDYuOC01LjczLDEwLjY5LTEuMDgtNi41OSwxLjE2LTEzLDQuNjEtMTguNTQsMS45NC0zLjExLDQuMjEtNS44OCw2Ljk5LTguMzEtMS44My4zLTMuNDcuODctNS4xNCwxLjYyLTcuMzYsMy4zLTE0LjAzLDkuNDQtMTkuMzMsMTUuNjguNTUtMy4xNSwxLjc5LTUuOTMsMy4zNS04LjU2LDQuNTQtNy42MywxMi4wMS0xMy40NSwyMC40NS0xNS45My0xLjQtLjI2LTIuNjQtLjMxLTMuOTgtLjI0LTIuNTQuMTUtNC45NS41Mi03LjQzLDEuMTQtNC42MSwxLjE2LTguOTQsMi44MS0xMy4yNyw1LjAyLjgtMS4yOCwxLjc0LTIuMzEsMi44MS0zLjMxLDQuMDItMy43Nyw5LjQ1LTYuNTYsMTQuNzUtOC4xNiwzLjk3LTEuMTksNy45OS0xLjcz...
+" alt="شعار النيابة العامة">
       </div>
     </div>
     <div style="justify-self:end;"></div>
@@ -187,7 +185,6 @@ tbody tr:last-child td{border-bottom:none;}
   <div class="pp-gold-bar"></div>
 </header>
 
-<!-- CHECK-IN PAGE -->
 <div class="page active" id="page-checkin">
   <div class="checkin-hero">
     <div class="hero-icon">📋</div>
@@ -223,7 +220,6 @@ tbody tr:last-child td{border-bottom:none;}
   </div>
 </div>
 
-<!-- SUCCESS PAGE -->
 <div class="page" id="page-success">
   <div class="success-box">
     <div class="success-icon">✅</div>
@@ -242,7 +238,6 @@ tbody tr:last-child td{border-bottom:none;}
   </div>
 </div>
 
-<!-- DUPLICATE PAGE -->
 <div class="page" id="page-duplicate">
   <div class="success-box">
     <div class="success-icon" style="font-size:60px;">⚠️</div>
@@ -255,7 +250,6 @@ tbody tr:last-child td{border-bottom:none;}
   </div>
 </div>
 
-<!-- LOGIN PAGE -->
 <div class="page" id="page-login">
   <div class="login-wrap">
     <div class="login-card">
@@ -270,7 +264,6 @@ tbody tr:last-child td{border-bottom:none;}
   </div>
 </div>
 
-<!-- ADMIN PAGE -->
 <div class="page page-wide" id="page-admin">
   <div class="admin-header-bar">
     <div class="admin-tabs">
@@ -283,7 +276,6 @@ tbody tr:last-child td{border-bottom:none;}
     </div>
   </div>
 
-  <!-- OVERVIEW TAB -->
   <div id="admin-tab-overview">
     <div class="admin-section-title">📊 إحصائيات الحضور</div>
     <div class="kpi-grid" id="kpi-grid"></div>
@@ -293,7 +285,6 @@ tbody tr:last-child td{border-bottom:none;}
     </div>
   </div>
 
-  <!-- RECORDS TAB -->
   <div id="admin-tab-records" style="display:none;">
     <div class="admin-section-title">📋 سجل الحضور الكامل</div>
     <div class="filter-bar">
@@ -326,25 +317,17 @@ tbody tr:last-child td{border-bottom:none;}
 </footer>
 
 <script>
-// ===== CONFIGURATION =====
-// ⚙️ غيّري هذا الرابط برابط Apps Script الخاص بك
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwTOPadMo4aPSCFr8bfrnABZy5JLtDmQQjwjXCez0Gsr6D5lHU6YRfUvmlRSySniZcU/exec';
-
-// ⚙️ السماح بالتسجيل المتكرر — true = مسموح، false = ممنوع
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzNGS_3Ah8LHGclbf536aeucP8r3FxttGg_UZX1XoUp_BKJ0QdqrNWvPjJ10DV-Lkcd/exec';
 const ALLOW_DUPLICATES = false;
-
-// ⚙️ بيانات الدخول للوحة التحكم
 const ADMIN_USER = 'admin';
 const ADMIN_PASS = 'ITP@2025';
 
-// ===== STATE =====
 let allRecords = [];
 let filteredRecords = [];
 let isLoggedIn = false;
 let currentPage = 1;
 const PER_PAGE = 20;
 
-// ===== NAVIGATION =====
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
@@ -375,7 +358,6 @@ function doLogin() {
   }
 }
 
-// ===== CHECK-IN =====
 function clearError(field) {
   if(!field || field === 'name') {
     document.getElementById('name-error').style.display = 'none';
@@ -391,14 +373,11 @@ function clearError(field) {
   }
 }
 
-// تنسيق رقم الجوال أثناء الإدخال
 function formatMobile(input) {
-  // إزالة كل ما ليس رقماً أو +
   let val = input.value.replace(/[^\d+]/g, '');
   input.value = val;
 }
 
-// تحويل رقم الجوال إلى صيغة موحدة 05XXXXXXXX
 function normalizeMobile(raw) {
   let num = raw.replace(/[^\d]/g, '');
   if(num.startsWith('966') && num.length === 12) num = '0' + num.slice(3);
@@ -406,13 +385,11 @@ function normalizeMobile(raw) {
   return num;
 }
 
-// إخفاء جزء من رقم الجوال للعرض العام
 function maskMobile(num) {
   if(!num || num.length < 6) return num;
   return num.slice(0,3) + '****' + num.slice(-3);
 }
 
-// التحقق من صحة رقم الجوال
 function validateMobile(raw) {
   const num = normalizeMobile(raw);
   return /^05\d{8}$/.test(num);
@@ -510,7 +487,6 @@ async function submitCheckin() {
   }
 }
 
-// ===== APPS SCRIPT API =====
 async function appsScriptRequest(payload) {
   const res = await fetch(APPS_SCRIPT_URL, {
     method: 'POST',
@@ -526,7 +502,6 @@ async function appsScriptRequest(payload) {
   return data;
 }
 
-// ===== ADMIN =====
 async function refreshAdmin() {
   showLoading(true);
   try {
@@ -562,40 +537,16 @@ function showAdminTab(t) {
 
 function renderOverview() {
   const total = allRecords.length;
-  const today = new Date().toLocaleDateString('ar-SA');
   const todayCount = allRecords.filter(r => r.date && r.date.includes(new Date().getDate())).length;
   const last = allRecords.length > 0 ? allRecords[allRecords.length-1] : null;
-
   const uniqueJobs = new Set(allRecords.map(r => r.jobTitle).filter(Boolean)).size;
+
   document.getElementById('kpi-grid').innerHTML = `
     <div class="kpi-card"><div class="kpi-icon">👥</div><div class="kpi-label">إجمالي المسجلين</div><div class="kpi-value">${total}</div></div>
     <div class="kpi-card"><div class="kpi-icon">📅</div><div class="kpi-label">المسجلون اليوم</div><div class="kpi-value">${todayCount}</div></div>
     <div class="kpi-card"><div class="kpi-icon">💼</div><div class="kpi-label">المسميات الوظيفية</div><div class="kpi-value">${uniqueJobs}</div></div>
     <div class="kpi-card"><div class="kpi-icon">⏰</div><div class="kpi-label">آخر تسجيل</div><div class="kpi-value" style="font-size:16px;">${last ? last.time : '—'}</div><div class="kpi-sub">${last ? last.name : ''}</div></div>
   `;
-
-  // إحصائية أكثر المسميات الوظيفية حضوراً
-  const jobStats = {};
-  allRecords.forEach(r => {
-    const j = r.jobTitle || '—';
-    jobStats[j] = (jobStats[j] || 0) + 1;
-  });
-  const topJobs = Object.entries(jobStats).sort((a,b) => b[1]-a[1]).slice(0,5);
-  const jobHtml = topJobs.length
-    ? topJobs.map(([job,count]) => `
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid #f0f0f0;font-size:13px;">
-        <span>💼 ${job}</span>
-        <span style="background:var(--teal-light);color:var(--teal-dark);border-radius:12px;padding:2px 10px;font-weight:700;font-size:12px;">${count}</span>
-      </div>`).join('')
-    : '<p style="color:var(--text-secondary);font-size:13px;text-align:center;padding:12px;">لا توجد بيانات</p>';
-
-  // إضافة بطاقة المسميات بعد KPIs
-  const jobCard = `
-    <div style="background:white;border-radius:10px;border:0.5px solid var(--border);padding:20px;margin-bottom:16px;">
-      <div style="font-size:15px;font-weight:600;color:var(--teal-dark);margin-bottom:14px;">💼 أكثر المسميات الوظيفية حضوراً</div>
-      ${jobHtml}
-    </div>`;
-  document.getElementById('kpi-grid').insertAdjacentHTML('afterend', jobCard);
 
   const recent = [...allRecords].reverse().slice(0,10);
   document.getElementById('recent-list').innerHTML = recent.length
@@ -640,7 +591,7 @@ function renderTable() {
   const tbody = document.getElementById('records-tbody');
 
   if(!filteredRecords.length) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-secondary);padding:32px;">لا توجد سجلات</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-secondary);padding:32px;">لا توجد سجلات</td></tr>`;
     document.getElementById('pagination').innerHTML = '';
     document.getElementById('records-count').textContent = '';
     return;
@@ -673,13 +624,16 @@ function populateDateFilter() {
   if(current) sel.value = current;
 }
 
-// ===== EXPORT =====
 function exportExcel() {
   if(!allRecords.length) { showToast('لا توجد بيانات للتصدير', 'error'); return; }
   const wb = XLSX.utils.book_new();
   const data = filteredRecords.map((r,i) => ({
-    '#': i+1, 'الاسم الكامل': r.name, 'المسمى الوظيفي': r.jobTitle||'',
-    'رقم الجوال': r.mobileNumber||'', 'التاريخ': r.date, 'الوقت': r.time
+    '#': i+1,
+    'الاسم الكامل': r.name,
+    'المسمى الوظيفي': r.jobTitle||'',
+    'رقم الجوال': r.mobileNumber||'',
+    'التاريخ': r.date,
+    'الوقت': r.time
   }));
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), 'الحضور');
   XLSX.writeFile(wb, `attendance_${new Date().toISOString().slice(0,10)}.xlsx`);
@@ -693,10 +647,11 @@ function exportCSV() {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'}));
   a.download = `attendance_${new Date().toISOString().slice(0,10)}.csv`;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 
-// ===== UI HELPERS =====
 function showLoading(show) {
   document.getElementById('loading-overlay').classList.toggle('show', show);
 }
@@ -709,7 +664,6 @@ function showToast(msg, type='info') {
   setTimeout(() => el.classList.remove('show'), 3500);
 }
 
-// ===== DEVICE HELPERS =====
 function getDeviceId() {
   if(!window.__deviceId) {
     window.__deviceId = 'DEV-' + Math.random().toString(36).slice(2,10).toUpperCase();
@@ -726,7 +680,6 @@ function getBrowser() {
   return 'Other';
 }
 
-// ===== INIT =====
 document.getElementById('full-name').focus();
 </script>
 </body>
