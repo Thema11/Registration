@@ -192,15 +192,30 @@ tbody tr:last-child td{border-bottom:none;}
   <div class="checkin-hero">
     <div class="hero-icon">📋</div>
     <h1>تسجيل حضور الورشة</h1>
-    <p>يرجى إدخال اسمك الكامل ثم الضغط على تسجيل الحضور</p>
+    <p>يرجى إدخال بياناتك ثم الضغط على تسجيل الحضور</p>
   </div>
 
   <div class="checkin-card">
     <div class="form-group">
       <label for="full-name">الاسم الكامل <span class="req">*</span></label>
-      <input type="text" id="full-name" placeholder="أدخل اسمك الكامل هنا..." autocomplete="name"
-             oninput="clearError()" onkeypress="if(event.key==='Enter')submitCheckin()">
-      <div class="field-error" id="name-error">⚠️ يرجى إدخال الاسم الكامل</div>
+      <input type="text" id="full-name" placeholder="أدخل الاسم الكامل" autocomplete="name"
+             oninput="clearError('name')" onkeypress="if(event.key==='Enter')document.getElementById('job-title').focus()">
+      <div class="field-error" id="name-error">⚠️ يرجى إدخال الاسم الكامل (حرفان على الأقل)</div>
+    </div>
+    <div class="form-group">
+      <label for="job-title">المسمى الوظيفي <span class="req">*</span></label>
+      <input type="text" id="job-title" placeholder="أدخل المسمى الوظيفي" autocomplete="organization-title"
+             oninput="clearError('job')" onkeypress="if(event.key==='Enter')document.getElementById('mobile-number').focus()">
+      <div class="field-hint">مثال: مدير إدارة، رئيس قسم، مستشار، باحث قانوني، وكيل نيابة</div>
+      <div class="field-error" id="job-error">⚠️ يرجى إدخال المسمى الوظيفي</div>
+    </div>
+    <div class="form-group">
+      <label for="mobile-number">رقم الجوال <span class="req">*</span></label>
+      <input type="tel" id="mobile-number" placeholder="05XXXXXXXX" autocomplete="tel"
+             oninput="formatMobile(this);clearError('mobile')" onkeypress="if(event.key==='Enter')submitCheckin()"
+             style="direction:ltr;text-align:right;">
+      <div class="field-hint">صيغ مقبولة: 05XXXXXXXX أو +9665XXXXXXXX</div>
+      <div class="field-error" id="mobile-error">⚠️ يرجى إدخال رقم جوال صحيح</div>
     </div>
     <button class="btn btn-primary" onclick="submitCheckin()" id="submit-btn">
       <span>✓</span> تسجيل الحضور
@@ -216,6 +231,8 @@ tbody tr:last-child td{border-bottom:none;}
     <p>أهلاً وسهلاً، نتمنى لكم ورشة مثمرة.</p>
     <div class="success-meta">
       <div class="success-meta-item">👤 <span id="success-name"></span></div>
+      <div class="success-meta-item">💼 <span id="success-job"></span></div>
+      <div class="success-meta-item">📱 <span id="success-mobile"></span></div>
       <div class="success-meta-item">📅 <span id="success-date"></span></div>
       <div class="success-meta-item">⏰ <span id="success-time"></span></div>
     </div>
@@ -230,7 +247,7 @@ tbody tr:last-child td{border-bottom:none;}
   <div class="success-box">
     <div class="success-icon" style="font-size:60px;">⚠️</div>
     <h2 style="color:var(--gold-dark);">تم تسجيل هذا الاسم مسبقاً</h2>
-    <p>الاسم "<strong id="dup-name"></strong>" مسجل في قائمة الحضور.</p>
+    <p>رقم الجوال "<strong id="dup-name"></strong>" مسجل مسبقاً في قائمة الحضور.</p>
     <p style="margin-top:8px;">إذا كنت تعتقد أن هذا خطأ، يرجى التواصل مع المنظمين.</p>
     <button class="btn btn-outline" style="max-width:260px;margin:20px auto 0;" onclick="resetCheckin()">
       رجوع
@@ -293,7 +310,7 @@ tbody tr:last-child td{border-bottom:none;}
     <div class="table-wrap">
       <table>
         <thead><tr>
-          <th>#</th><th>الاسم الكامل</th><th>التاريخ</th><th>الوقت</th><th>المتصفح</th>
+          <th>#</th><th>الاسم الكامل</th><th>المسمى الوظيفي</th><th>رقم الجوال</th><th>التاريخ</th><th>الوقت</th>
         </tr></thead>
         <tbody id="records-tbody"></tbody>
       </table>
@@ -311,7 +328,7 @@ tbody tr:last-child td{border-bottom:none;}
 <script>
 // ===== CONFIGURATION =====
 // ⚙️ غيّري هذا الرابط برابط Apps Script الخاص بك
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzsLqbAOJ6TeyBhjXZ5Dtd9osNN-Nvu_49iTGVlV2geU1pu97W29Vrb3L-0CYP0akf_/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzNGS_3Ah8LHGclbf536aeucP8r3FxttGg_UZX1XoUp_BKJ0QdqrNWvPjJ10DV-Lkcd/exec';
 
 // ⚙️ السماح بالتسجيل المتكرر — true = مسموح، false = ممنوع
 const ALLOW_DUPLICATES = false;
@@ -359,35 +376,92 @@ function doLogin() {
 }
 
 // ===== CHECK-IN =====
-function clearError() {
-  document.getElementById('name-error').style.display = 'none';
-  document.getElementById('full-name').classList.remove('error');
+function clearError(field) {
+  if(!field || field === 'name') {
+    document.getElementById('name-error').style.display = 'none';
+    document.getElementById('full-name').classList.remove('error');
+  }
+  if(!field || field === 'job') {
+    document.getElementById('job-error').style.display = 'none';
+    document.getElementById('job-title').classList.remove('error');
+  }
+  if(!field || field === 'mobile') {
+    document.getElementById('mobile-error').style.display = 'none';
+    document.getElementById('mobile-number').classList.remove('error');
+  }
+}
+
+// تنسيق رقم الجوال أثناء الإدخال
+function formatMobile(input) {
+  // إزالة كل ما ليس رقماً أو +
+  let val = input.value.replace(/[^\d+]/g, '');
+  input.value = val;
+}
+
+// تحويل رقم الجوال إلى صيغة موحدة 05XXXXXXXX
+function normalizeMobile(raw) {
+  let num = raw.replace(/[^\d]/g, '');
+  if(num.startsWith('966') && num.length === 12) num = '0' + num.slice(3);
+  if(num.startsWith('5') && num.length === 9) num = '0' + num;
+  return num;
+}
+
+// إخفاء جزء من رقم الجوال للعرض العام
+function maskMobile(num) {
+  if(!num || num.length < 6) return num;
+  return num.slice(0,3) + '****' + num.slice(-3);
+}
+
+// التحقق من صحة رقم الجوال
+function validateMobile(raw) {
+  const num = normalizeMobile(raw);
+  return /^05\d{8}$/.test(num);
 }
 
 function resetCheckin() {
   document.getElementById('full-name').value = '';
+  document.getElementById('job-title').value = '';
+  document.getElementById('mobile-number').value = '';
   clearError();
   showPage('checkin');
   setTimeout(() => document.getElementById('full-name').focus(), 300);
 }
 
 async function submitCheckin() {
-  const rawName = document.getElementById('full-name').value;
-  const name = rawName.trim().replace(/\s+/g, ' ');
+  const name = document.getElementById('full-name').value.trim().replace(/\s+/g,' ');
+  const jobTitle = document.getElementById('job-title').value.trim().replace(/\s+/g,' ');
+  const mobileRaw = document.getElementById('mobile-number').value.trim();
+  const mobile = normalizeMobile(mobileRaw);
+  let hasError = false;
 
   // التحقق من الاسم
   if(!name || name.length < 2) {
+    document.getElementById('name-error').textContent = '⚠️ يرجى إدخال الاسم الكامل (حرفان على الأقل)';
     document.getElementById('name-error').style.display = 'block';
     document.getElementById('full-name').classList.add('error');
-    document.getElementById('full-name').focus();
-    return;
+    hasError = true;
   }
 
-  // منع الإدخالات غير المنطقية
-  if(/^[\d\s\p{P}]+$/u.test(name)) {
-    document.getElementById('name-error').textContent = '⚠️ يرجى إدخال اسم صحيح';
-    document.getElementById('name-error').style.display = 'block';
-    document.getElementById('full-name').classList.add('error');
+  // التحقق من المسمى الوظيفي
+  if(!jobTitle || jobTitle.length < 2) {
+    document.getElementById('job-error').textContent = '⚠️ يرجى إدخال المسمى الوظيفي';
+    document.getElementById('job-error').style.display = 'block';
+    document.getElementById('job-title').classList.add('error');
+    hasError = true;
+  }
+
+  // التحقق من رقم الجوال
+  if(!mobileRaw || !validateMobile(mobileRaw)) {
+    document.getElementById('mobile-error').textContent = '⚠️ يرجى إدخال رقم جوال صحيح (مثال: 05XXXXXXXX)';
+    document.getElementById('mobile-error').style.display = 'block';
+    document.getElementById('mobile-number').classList.add('error');
+    hasError = true;
+  }
+
+  if(hasError) {
+    if(!name || name.length < 2) document.getElementById('full-name').focus();
+    else if(!jobTitle || jobTitle.length < 2) document.getElementById('job-title').focus();
+    else document.getElementById('mobile-number').focus();
     return;
   }
 
@@ -404,6 +478,8 @@ async function submitCheckin() {
     const payload = {
       action: 'submit',
       name: name,
+      jobTitle: jobTitle,
+      mobileNumber: mobile,
       deviceId: deviceId,
       browser: browser,
       allowDuplicates: ALLOW_DUPLICATES,
@@ -415,10 +491,12 @@ async function submitCheckin() {
     const result = await appsScriptRequest(payload);
 
     if(result.status === 'duplicate') {
-      document.getElementById('dup-name').textContent = name;
+      document.getElementById('dup-name').textContent = maskMobile(mobile);
       showPage('duplicate');
     } else if(result.status === 'ok') {
       document.getElementById('success-name').textContent = name;
+      document.getElementById('success-job').textContent = jobTitle;
+      document.getElementById('success-mobile').textContent = maskMobile(mobile);
       document.getElementById('success-date').textContent = payload.date;
       document.getElementById('success-time').textContent = payload.time;
       showPage('success');
@@ -491,18 +569,43 @@ function renderOverview() {
   const todayCount = allRecords.filter(r => r.date && r.date.includes(new Date().getDate())).length;
   const last = allRecords.length > 0 ? allRecords[allRecords.length-1] : null;
 
+  const uniqueJobs = new Set(allRecords.map(r => r.jobTitle).filter(Boolean)).size;
   document.getElementById('kpi-grid').innerHTML = `
-    <div class="kpi-card"><div class="kpi-icon">👥</div><div class="kpi-label">إجمالي الحضور</div><div class="kpi-value">${total}</div></div>
-    <div class="kpi-card"><div class="kpi-icon">📅</div><div class="kpi-label">حضور اليوم</div><div class="kpi-value">${todayCount}</div></div>
+    <div class="kpi-card"><div class="kpi-icon">👥</div><div class="kpi-label">إجمالي المسجلين</div><div class="kpi-value">${total}</div></div>
+    <div class="kpi-card"><div class="kpi-icon">📅</div><div class="kpi-label">المسجلون اليوم</div><div class="kpi-value">${todayCount}</div></div>
+    <div class="kpi-card"><div class="kpi-icon">💼</div><div class="kpi-label">المسميات الوظيفية</div><div class="kpi-value">${uniqueJobs}</div></div>
     <div class="kpi-card"><div class="kpi-icon">⏰</div><div class="kpi-label">آخر تسجيل</div><div class="kpi-value" style="font-size:16px;">${last ? last.time : '—'}</div><div class="kpi-sub">${last ? last.name : ''}</div></div>
   `;
+
+  // إحصائية أكثر المسميات الوظيفية حضوراً
+  const jobStats = {};
+  allRecords.forEach(r => {
+    const j = r.jobTitle || '—';
+    jobStats[j] = (jobStats[j] || 0) + 1;
+  });
+  const topJobs = Object.entries(jobStats).sort((a,b) => b[1]-a[1]).slice(0,5);
+  const jobHtml = topJobs.length
+    ? topJobs.map(([job,count]) => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid #f0f0f0;font-size:13px;">
+        <span>💼 ${job}</span>
+        <span style="background:var(--teal-light);color:var(--teal-dark);border-radius:12px;padding:2px 10px;font-weight:700;font-size:12px;">${count}</span>
+      </div>`).join('')
+    : '<p style="color:var(--text-secondary);font-size:13px;text-align:center;padding:12px;">لا توجد بيانات</p>';
+
+  // إضافة بطاقة المسميات بعد KPIs
+  const jobCard = `
+    <div style="background:white;border-radius:10px;border:0.5px solid var(--border);padding:20px;margin-bottom:16px;">
+      <div style="font-size:15px;font-weight:600;color:var(--teal-dark);margin-bottom:14px;">💼 أكثر المسميات الوظيفية حضوراً</div>
+      ${jobHtml}
+    </div>`;
+  document.getElementById('kpi-grid').insertAdjacentHTML('afterend', jobCard);
 
   const recent = [...allRecords].reverse().slice(0,10);
   document.getElementById('recent-list').innerHTML = recent.length
     ? recent.map((r,i) => `
       <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:0.5px solid #f0f0f0;font-size:14px;">
         <span style="background:var(--teal-light);color:var(--teal-dark);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;">${total - i}</span>
-        <div style="flex:1;"><div style="font-weight:600;">${r.name}</div><div style="font-size:12px;color:var(--text-secondary);">${r.date} — ${r.time}</div></div>
+        <div style="flex:1;"><div style="font-weight:600;">${r.name}</div><div style="font-size:12px;color:var(--teal-dark);margin-top:1px;">${r.jobTitle||''}</div><div style="font-size:12px;color:var(--text-secondary);">${r.date} — ${r.time}</div></div>
         <span class="badge badge-success">✓</span>
       </div>`).join('')
     : '<p style="color:var(--text-secondary);font-size:14px;text-align:center;padding:20px;">لا توجد سجلات بعد</p>';
@@ -512,7 +615,10 @@ function filterRecords() {
   const search = (document.getElementById('search-input')?.value || '').toLowerCase();
   const dateFilter = document.getElementById('filter-date')?.value || '';
   filteredRecords = allRecords.filter(r => {
-    if(search && !(r.name||'').toLowerCase().includes(search)) return false;
+    if(search &&
+      !(r.name||'').toLowerCase().includes(search) &&
+      !(r.jobTitle||'').toLowerCase().includes(search) &&
+      !(r.mobileNumber||'').includes(search)) return false;
     if(dateFilter && r.rawDate !== dateFilter) return false;
     return true;
   });
@@ -546,9 +652,10 @@ function renderTable() {
   tbody.innerHTML = page.map((r, i) => `<tr>
     <td style="color:var(--text-secondary);font-size:12px;">${start+i+1}</td>
     <td style="font-weight:600;">${r.name}</td>
+    <td style="color:var(--teal-dark);font-size:13px;">${r.jobTitle||'—'}</td>
+    <td style="direction:ltr;text-align:right;font-size:13px;">${r.mobileNumber||'—'}</td>
     <td>${r.date}</td>
     <td>${r.time}</td>
-    <td style="font-size:12px;color:var(--text-secondary);">${r.browser||'—'}</td>
   </tr>`).join('');
 
   document.getElementById('records-count').textContent = `إجمالي: ${filteredRecords.length} سجل`;
@@ -574,7 +681,8 @@ function exportExcel() {
   if(!allRecords.length) { showToast('لا توجد بيانات للتصدير', 'error'); return; }
   const wb = XLSX.utils.book_new();
   const data = filteredRecords.map((r,i) => ({
-    '#': i+1, 'الاسم الكامل': r.name, 'التاريخ': r.date, 'الوقت': r.time, 'المتصفح': r.browser||''
+    '#': i+1, 'الاسم الكامل': r.name, 'المسمى الوظيفي': r.jobTitle||'',
+    'رقم الجوال': r.mobileNumber||'', 'التاريخ': r.date, 'الوقت': r.time
   }));
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), 'الحضور');
   XLSX.writeFile(wb, `attendance_${new Date().toISOString().slice(0,10)}.xlsx`);
@@ -582,8 +690,8 @@ function exportExcel() {
 
 function exportCSV() {
   if(!allRecords.length) { showToast('لا توجد بيانات للتصدير', 'error'); return; }
-  const headers = ['#','الاسم الكامل','التاريخ','الوقت','المتصفح'];
-  const rows = filteredRecords.map((r,i) => [i+1, r.name, r.date, r.time, r.browser||'']);
+  const headers = ['#','الاسم الكامل','المسمى الوظيفي','رقم الجوال','التاريخ','الوقت'];
+  const rows = filteredRecords.map((r,i) => [i+1, r.name, r.jobTitle||'', r.mobileNumber||'', r.date, r.time]);
   const csv = '\uFEFF' + [headers,...rows].map(r => r.map(c => '"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\r\n');
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'}));
